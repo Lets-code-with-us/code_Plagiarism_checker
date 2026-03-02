@@ -1,0 +1,5 @@
+#!bin/bash
+uv venv
+
+
+
