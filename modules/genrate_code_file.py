@@ -21,5 +21,5 @@ def genrate_code_file(language:int,code:str):
     folder_path.mkdir(parents=True,exist_ok=True)
     with open(file_path,"w") as f:
         f.writelines(code)
-    return file_path or  ""
+    return file_path,id
     

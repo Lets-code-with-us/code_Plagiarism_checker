@@ -30,6 +30,27 @@ def remove_python_comments(code: str) -> str:
     return code
 
 
+def preprocess_query_code(code:str, language:int):
+    lang = language_id[language]
+    match lang:
+        case "c" | "cpp" | "java" | "node":
+            code = remove_c_style_comments(code)
+
+        case "rust":
+            code = remove_c_style_comments(code)
+            # Remove Rust doc comments
+            code = re.sub(r'///.*', '', code)
+            code = re.sub(r'//!.*', '', code)
+
+        case "python":
+            code = remove_python_comments(code)
+
+        case _:
+            raise ValueError("Unsupported language")
+    return code
+    
+
+
 def preprocess_code(language: int, code: str):
     lang = language_id[language]
     corpus = []
@@ -50,11 +71,11 @@ def preprocess_code(language: int, code: str):
 
         case _:
             raise ValueError("Unsupported language")
-    file_path = genrate_code_file(language, code.strip())
+    file_path,id = genrate_code_file(language, code.strip())
     with open(file_path,'r') as f:
         fs = f.read()
         temp = fs.split(" ")
     for i in temp:
         if i != '' and i != '\n':
             corpus.append(i)    
-    return corpus
+    return corpus,id
